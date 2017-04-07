@@ -1,0 +1,34 @@
+//
+//  PrefixHeader.pch
+//  JWLSliderBar
+//
+//  Created by guwo1027 on 2017/4/7.
+//  Copyright © 2017年 JWL. All rights reserved.
+//
+
+#ifdef __OBJC__
+
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+
+#import "Masonry.h"
+#import "UIView+Utils.h"
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+//--------- 颜色 ---------
+#define kRGBColor(r, g, b) [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:1.0]
+#define kRGBAlphaColor(r,g,b,a) [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:a]
+#define kRandomAlphaColor(a) [UIColor colorWithRed:arc4random_uniform(255)/255.0 green:arc4random_uniform(255)/255.0 blue:arc4random_uniform(255)/255.0 alpha:a]
+
+//--------- 屏幕适配 ---------
+#define kScreenWidthScale  [UIScreen mainScreen].bounds.size.width/414
+#define kScreenHeightScale [UIScreen mainScreen].bounds.size.height/736
+#define kScreenW [UIScreen mainScreen].bounds.size.width
+#define kScreenH [UIScreen mainScreen].bounds.size.height
+
+#endif /* PrefixHeader_pch */
+
+#endif
+
