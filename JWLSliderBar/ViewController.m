@@ -89,6 +89,9 @@ typedef enum : NSUInteger {
 
 - (void)startOverview:(UIButton*)sender{
     
+    if (BarStatus == rightSlideBarStatusSmall) {
+        return;
+    }
     BarStatus = rightSlideBarStatusSmall;
     
     
