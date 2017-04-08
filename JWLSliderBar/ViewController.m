@@ -38,6 +38,7 @@ typedef enum : NSUInteger {
 @implementation ViewController
 {
     rightSlideBarStatus BarStatus;
+    rightSlideBarItem currentItem;
     CGFloat startItemEdgeDistance;
     CGFloat endItemEdgeDistance;
 }
@@ -104,22 +105,40 @@ typedef enum : NSUInteger {
     //            [self scrollViewUpdateConstraintsWithRightSlideBarStatus:isNormalScrollViewItem];
     //            [self.view layoutIfNeeded];
     
+    self.scrollView.bounces = NO;
+    
+    //设置scrollview的起始Item距屏幕左边的距离
+    startItemEdgeDistance = 0;
+    //设置scrollview的结束Item距屏幕右的距离
+    endItemEdgeDistance = 0;
+    
     //overview状态
     [UIView animateWithDuration:0.5 animations:^{
-        [self.scrollView mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.centerY.equalTo(self.view).offset(kScreenH/2 - kScrollViewOverviewHeight/2);
-            make.height.offset(kScrollViewOverviewHeight);
-            make.width.offset(kScreenW);
-        }];
+        
         [self scrollViewUpdateConstraintsWithRightSlideBarStatus:BarStatus];
-        [self.view layoutIfNeeded];
+        
+    } completion:^(BOOL finished) {
+        
+        [UIView animateWithDuration:0.5 animations:^{
+            
+//            self.scrollView.contentSize = CGSizeMake(startItemEdgeDistance + kScrollViewOverviewHeight * kScrollViewItemCount + endItemEdgeDistance, kScrollViewOverviewHeight);
+//            [self.scrollView scrollRectToVisible:CGRectMake(kScrollViewOverviewHeight*currentItem, 0, kScrollViewOverviewHeight, kScrollViewOverviewHeight) animated:YES];
+            
+            [self.scrollView mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.centerY.equalTo(self.view).offset(kScreenH/2 - kScrollViewOverviewHeight/2);
+                make.height.offset(kScrollViewOverviewHeight);
+                make.width.offset(kScreenW);
+            }];
+            [self.view layoutIfNeeded];
+        }];
     }];
     
 }
 
 -(void)viewTapGesture:(UITapGestureRecognizer*)sender{
     
-    
+    BarStatus = rightSlideBarStatusLarge;
+    currentItem = sender.view.tag - 100;
     
     NSLog(@"当前点击的tag是---%ld",sender.view.tag);
     
@@ -130,23 +149,24 @@ typedef enum : NSUInteger {
     //设置scrollview的结束Item距屏幕右的距离
     endItemEdgeDistance = 0;
     
-    self.scrollView.contentSize = CGSizeMake(startItemEdgeDistance + kScreenW * kScrollViewItemCount + endItemEdgeDistance, kScreenH);
-    
-    
-    [self.scrollView scrollRectToVisible:CGRectMake(kScreenW*(sender.view.tag - 100), 0, kScreenW, kScreenH) animated:YES];
-    
     [UIView animateWithDuration:0.5 animations:^{
         
-        [self scrollViewUpdateConstraintsWithRightSlideBarStatus:rightSlideBarStatusLarge];
-        [self.scrollView mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.center.equalTo(self.view);
-            make.height.offset(kScreenH);
-            make.width.offset(kScreenW);
-        }];
+        [self scrollViewUpdateConstraintsWithRightSlideBarStatus:BarStatus];
         
-        [self.view layoutIfNeeded];
+    } completion:^(BOOL finished) {
+        
+        [UIView animateWithDuration:0.5 animations:^{
+            self.scrollView.contentSize = CGSizeMake(startItemEdgeDistance + kScreenW * kScrollViewItemCount + endItemEdgeDistance, kScreenH);
+            [self.scrollView scrollRectToVisible:CGRectMake(kScreenW*currentItem, 0, kScreenW, kScreenH) animated:NO];
+            
+            [self.scrollView mas_updateConstraints:^(MASConstraintMaker *make) {
+                make.center.equalTo(self.view);
+                make.height.offset(kScreenH);
+                make.width.offset(kScreenW);
+            }];
+            [self.view layoutIfNeeded];
+        }];
     }];
-    
     
     
     switch (sender.view.tag) {
@@ -181,16 +201,7 @@ typedef enum : NSUInteger {
 
 - (void)scrollViewUpdateConstraintsWithRightSlideBarStatus:(rightSlideBarStatus)status{
     
-    if (status == rightSlideBarStatusMedium) {
-        
-        //设置scrollview的起始Item距屏幕左边的距离
-        startItemEdgeDistance = kScreenW - 50;
-        //设置scrollview的结束Item距屏幕右的距离
-        endItemEdgeDistance = kScreenW - 50;
-        
-        self.scrollView.contentSize = CGSizeMake(startItemEdgeDistance + kScreenW * kScrollViewItemCount + endItemEdgeDistance, kScreenW);
-        
-    }else if (status == rightSlideBarStatusSmall){
+    if (status == rightSlideBarStatusSmall) {
         
         self.scrollView.bounces = NO;
         
@@ -200,8 +211,20 @@ typedef enum : NSUInteger {
         endItemEdgeDistance = 0;
         
         self.scrollView.contentSize = CGSizeMake(startItemEdgeDistance + kScrollViewOverviewHeight * kScrollViewItemCount + endItemEdgeDistance, kScrollViewOverviewHeight);
+        [self.scrollView scrollRectToVisible:CGRectMake(kScrollViewOverviewHeight*currentItem, 0, kScrollViewOverviewHeight, kScrollViewOverviewHeight) animated:YES];
+        
+    }else if (status == rightSlideBarStatusMedium){
+        
+        //设置scrollview的起始Item距屏幕左边的距离
+        startItemEdgeDistance = kScreenW - 50;
+        //设置scrollview的结束Item距屏幕右的距离
+        endItemEdgeDistance = kScreenW - 50;
+        
+        self.scrollView.contentSize = CGSizeMake(startItemEdgeDistance + kScreenW * kScrollViewItemCount + endItemEdgeDistance, kScreenW);
+        [self.scrollView scrollRectToVisible:CGRectMake(startItemEdgeDistance + kScreenW*currentItem, 0, kScreenW, kScreenW) animated:YES];
         
     }else if (status == rightSlideBarStatusLarge){
+        
         
         
     }
@@ -210,26 +233,25 @@ typedef enum : NSUInteger {
     //依次更新item约束
     for (int i = 0; i<kScrollViewItemCount; i++) {
         
-        
         UIView *itemView = self.scrollViewItemArr[i];
         
-        if (status == rightSlideBarStatusMedium) {
+        if (status == rightSlideBarStatusSmall) {
+            
+            [itemView mas_updateConstraints:^(MASConstraintMaker *make) {
+                
+                make.width.offset(kScrollViewOverviewHeight);
+                make.height.offset(kScrollViewOverviewHeight);
+                make.centerX.equalTo(self.scrollView).offset(-(kScreenW - kScrollViewOverviewHeight)/2 + i* kScrollViewOverviewHeight);
+                make.centerY.equalTo(self.scrollView);
+            }];
+            
+        }else if (status == rightSlideBarStatusMedium){
             
             [itemView mas_updateConstraints:^(MASConstraintMaker *make) {
                 
                 make.width.offset(kScreenW - 20);
                 make.height.offset(kScreenW - 20);
                 make.centerX.equalTo(self.scrollView).offset(startItemEdgeDistance + kScreenW * i);
-                make.centerY.equalTo(self.scrollView);
-            }];
-            
-            
-        }else if (status == rightSlideBarStatusSmall){
-            
-            [itemView mas_updateConstraints:^(MASConstraintMaker *make) {
-                make.width.offset(kScrollViewOverviewHeight);
-                make.height.offset(kScrollViewOverviewHeight);
-                make.centerX.equalTo(self.scrollView).offset(-(kScreenW - kScrollViewOverviewHeight)/2 + i* kScrollViewOverviewHeight);
                 make.centerY.equalTo(self.scrollView);
             }];
             
@@ -242,6 +264,7 @@ typedef enum : NSUInteger {
                 make.centerX.equalTo(self.scrollView).offset(startItemEdgeDistance + kScreenW * i);
                 make.centerY.equalTo(self.scrollView);
             }];
+            
         }
     }
 }

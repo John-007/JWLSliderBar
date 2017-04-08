@@ -233,6 +233,7 @@
 				TargetAttributes = {
 					B92EE1281E9793C20000C1E0 = {
 						CreatedOnToolsVersion = 8.3;
+						DevelopmentTeam = PZVR57WU37;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -405,6 +406,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = PZVR57WU37;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "JWLSliderBar/Other (其他)/PrefixHeader.pch";
 				INFOPLIST_FILE = JWLSliderBar/Info.plist;
@@ -418,6 +420,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = PZVR57WU37;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "JWLSliderBar/Other (其他)/PrefixHeader.pch";
 				INFOPLIST_FILE = JWLSliderBar/Info.plist;
