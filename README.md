@@ -1,2 +1,4 @@
 # JWLSliderBar
 一个可滑动的scrollView，通过按钮变换其滑动位置。
+
+使用masonry对scrollView及其上面的item做约束，相应按钮点击事件后，通过masonry的update更新其位置。
